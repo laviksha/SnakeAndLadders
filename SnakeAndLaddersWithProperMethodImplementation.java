@@ -27,63 +27,106 @@ public class SnakeAndLaddersWithProperMethodImplementation {
 		
 	}
 	private static void startTheGame() {
-		 int computer=0;
-		 int human=0;
+		 int computerPosition=0;
+		 int humanPosition=0;
 		 boolean turnOfComputer=true;
 		 while(true) {
 			 int rolleDice=rollDice(6);
 		 if(turnOfComputer) {
 			 System.out.println("Turn of Computer. Dice rolled : "+rolleDice);
-			 int old=computer;
-			 computer=computer+rolleDice;
-			 if(checkIfUserWon(COMPUTER,computer)) {
+			
+			 if(checkIfUserWon(COMPUTER,computerPosition+rolleDice)) {
 				 break;
 			 }
-			 if(computer>100) {
-				 System.out.println("Computer cannot move forward. Dice may lead you out of borad>100");
-				 computer=old;
+			 
+			 if(checkIfUserCanMoveForward(COMPUTER,computerPosition)) {	
 				 continue;
 			 }
-			 if(laddersPosition.containsKey(computer)) {
-				 System.out.println("=====YAYYYA Ladders HERE!! Ladders from "+computer+","+laddersPosition.get(computer)+"======");
-				 computer=laddersPosition.get(computer);
+			 int compOldPOsition=computerPosition;
+			 computerPosition=computerPosition+rolleDice;
+			 
+			 if(checkIfLadderExist(computerPosition)) {
+				 computerPosition=newPositionAfterLadder(computerPosition);
 			 }
-			 if(snakesPosition.containsKey(computer)) {
-				 System.out.println("============OHOOOO! Snake Bite !! Snake from "+computer+","+laddersPosition.get(computer)+"========");
-				 computer=snakesPosition.get(computer);
+			 
+			 if(checkIfSnakeExist(computerPosition)) {
+				 computerPosition=newPositionAfterSnake(computerPosition);
 			 }
-			 System.out.println("Computer old position:"+old+" new position:"+computer);
+			 System.out.println("Computer old position:"+compOldPOsition+" new position:"+computerPosition+"\n\n");
+			
 			 turnOfComputer=false;
 		 }
 		 else{
-			 int old=human;
-			 human=human+rolleDice;
-			 if(checkIfUserWon(HUMAN,human)) {
+			 System.out.println("Turn of Human. Dice rolled : "+rolleDice);
+				
+			 if(checkIfUserWon(HUMAN,computerPosition+rolleDice)) {
 				 break;
 			 }
-			 if(human>100) {
-				 System.out.println("Human cannot move forward. Dice may lead you out of borad>100");
-				 human=old;
+			 
+			 if(checkIfUserCanMoveForward(HUMAN,computerPosition)) {	
 				 continue;
 			 }
-			 if(laddersPosition.containsKey(human)) {
-				 System.out.println("Ladders from "+human+","+laddersPosition.get(computer));
-				 human=laddersPosition.get(human);
+			 int humanOldPosition=humanPosition;
+			 humanPosition=humanPosition+rolleDice;
+			 
+			 if(checkIfLadderExist(humanPosition)) {
+				 humanPosition=newPositionAfterLadder(humanPosition);
 			 }
-			 if(snakesPosition.containsKey(human)) {
-				 System.out.println("Snake from "+human+","+laddersPosition.get(computer));
-				 human=snakesPosition.get(human);
-			 }
-			 System.out.println("B old position:"+old+" new position:"+human);
+			 
+			 if(checkIfSnakeExist(humanPosition)) {
+				 humanPosition=newPositionAfterSnake(humanPosition);
+			 } 
+			 System.out.println("Human old position:"+humanOldPosition+" new position:"+humanPosition+"\n\n");
 			 turnOfComputer=true;
 		 }
 		 
 		 }
 		
 	}
+	private static int newPositionAfterLadder(int computerPosition) {
+		return laddersPosition.get(computerPosition);
+	}
+	
+	private static boolean checkIfLadderExist(int currentPosition) {
+		 if(laddersPosition.containsKey(currentPosition)) {
+			 System.out.println("=====YAYYYA Ladders HERE!! Ladders from "+currentPosition+","+laddersPosition.get(currentPosition)+"======");
+			 return true;
+		 }
+		 return false;
+	}
+	
+	
+	
+	private static int newPositionAfterSnake(int position) {
+		return snakesPosition.get(position);
+	}
+	
+	private static boolean checkIfSnakeExist(int currentPosition) {
+		 if(snakesPosition.containsKey(currentPosition)) {
+			 System.out.println("============OHOOOO! Snake Bite !! Snake from "+currentPosition+","+snakesPosition.get(currentPosition)+"========");
+			 return true;
+		 }
+		 return false;
+	}
+	
+	private static boolean checkIfUserCanMoveForward(String user,int position) {
+		if(position>100) {
+			 System.out.println(user+" cannot move forward. Dice may lead you out of borad>100");
+			return true;
+		}
+		return false;
+	}
+	
 	private static boolean checkIfUserWon(String user,int position) {
 		if(position==100) {
 			System.out.println("============= Hurray "+user+" Won========");
+			return true;
+		}
+		return false;
+	}
+	
+	private static boolean gameOver(int computerPosition,int humanPOsition) {
+		if(computerPosition==100 || humanPOsition==100) {
 			return true;
 		}
 		return false;
@@ -108,7 +151,7 @@ public class SnakeAndLaddersWithProperMethodImplementation {
 			 //snake + ladder point is not considered
 			 while(positionMap.size()<5) {
 			 int startPosition=rd.nextInt(89)+11;
-			 int endPosition=rd.nextInt(startPosition)+1;//+1 as 0 may occur
+			 int endPosition=rd.nextInt(startPosition-10)+1;//+1 as 0 may occur
 			 if(positionMap.containsKey(startPosition)) {
 				 continue;
 			 }
