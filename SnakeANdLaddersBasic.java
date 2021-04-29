@@ -56,7 +56,7 @@ public class SnakeAndLadder {
 		 currentPositionOfB=currentPositionOfB+rolleDice;
 		 if(currentPositionOfB==100) 
 		 {
-			 System.out.println("B won. HURRAY!!");
+			 System.out.println("B wonnn. HURRAY!!");
 			 break;
 			 }
 		 if(currentPositionOfB>100) {
